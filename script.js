@@ -25,4 +25,45 @@ document.addEventListener('DOMContentLoaded', function() {
     sections.forEach((section) => {
         observer.observe(section);
     });
+
+    // Decrypted Text Animation for header info
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    
+    function decryptText(element) {
+        const text = element.getAttribute('data-text');
+        if (!text) return;
+        
+        let iterations = 0;
+        const speed = 26;
+        
+        const interval = setInterval(() => {
+            element.textContent = text
+                .split('')
+                .map((char, index) => {
+                    if (char === ' ' || char === ':') return char;
+                    if (index < iterations) {
+                        return text[index];
+                    }
+                    return CHARS[Math.floor(Math.random() * CHARS.length)];
+                })
+                .join('');
+            
+            iterations += 0.38;
+            
+            if (iterations >= text.length) {
+                clearInterval(interval);
+                element.textContent = text;
+            }
+        }, speed);
+    }
+    
+    // Apply decrypted effect to header info items
+    const decryptElements = document.querySelectorAll('.decrypt-text');
+    decryptElements.forEach((element, index) => {
+        element.setAttribute('data-text', element.textContent);
+        // Stagger the animations
+        setTimeout(() => {
+            decryptText(element);
+        }, index * 300);
+    });
 });
